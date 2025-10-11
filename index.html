@@ -37,10 +37,18 @@
 
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
-                <input type="text" id="urlInput" placeholder="e.g., hey.com or https://www.google.com" class="w-full bg-gray-900 border-2 border-gray-700 rounded-lg py-3 pl-12 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
-                <button id="pasteBtn" title="Paste from clipboard" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                </button>
+                <input type="text" id="urlInput" placeholder="e.g., hey.com or https://www.google.com" class="w-full bg-gray-900 border-2 border-gray-700 rounded-lg py-3 pl-12 pr-[88px] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex space-x-1">
+                    
+                    <button id="clearBtn" title="Clear input" class="text-gray-500 hover:text-red-400 transition-colors p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
+                    </button>
+                    
+                    <button id="pasteBtn" title="Paste from clipboard" class="text-gray-500 hover:text-white transition-colors p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                    </button>
+                </div>
             </div>
 
             <div id="results" class="mt-8 space-y-4 hidden">
@@ -85,8 +93,16 @@
         const faviconDefaultImgEl = document.getElementById('faviconDefaultImg');
         const faviconLargeImgEl = document.getElementById('faviconLargeImg');
         const pasteBtn = document.getElementById('pasteBtn');
+        const clearBtn = document.getElementById('clearBtn'); // Get the new clear button
 
-        // PASTE BUTTON LOGIC - FUNCTIONAL AS IS
+        // --- NEW CLEAR BUTTON LOGIC ---
+        clearBtn.addEventListener('click', () => {
+            urlInput.value = ''; // Clear the input field
+            resultsDiv.classList.add('hidden'); // Hide the results section
+            urlInput.focus(); // Put focus back on the input
+        });
+
+        // PASTE BUTTON LOGIC
         pasteBtn.addEventListener('click', async () => {
             try {
                 const text = await navigator.clipboard.readText();
@@ -96,7 +112,6 @@
                     urlInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             } catch (error) {
-                // Clipboard access error, often due to security context (not using https/localhost)
                 console.warn('Failed to read clipboard content. Ensure you are on a secure context (https/localhost).', error);
                 alert('Failed to paste. Your browser may require HTTPS to access the clipboard.');
             }
@@ -109,26 +124,21 @@
             let hostname = null;
 
             try {
-                // 1. Attempt using URL object with protocol prefix for robustness
                 const fullUrl = trimmedUrl.startsWith('http') ? trimmedUrl : `https://${trimmedUrl}`;
                 const urlObj = new URL(fullUrl);
                 hostname = urlObj.hostname;
             } catch (error) {
-                 // 2. Fallback for simpler strings (e.g., "domain.com/path")
-                 // The regex approach from the original code handles this well:
                  const matches = trimmedUrl.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/im);
                  if (matches && matches[1]) {
                     hostname = matches[1];
                  } else {
-                    return null; // Invalid input
+                    return null;
                  }
             }
              
             if (!hostname) return null;
 
-            // Remove port if present (e.g., "localhost:3000")
             hostname = hostname.split(':')[0];
-            // Remove 'www.' prefix if it exists
             return hostname.replace(/^www\./i, '');
         }
 
@@ -137,24 +147,19 @@
             const domain = getDomain(urlInput.value);
 
             if (domain) {
-                // Ensure the domain is safe to use in the API call
                 const cleanDomain = encodeURIComponent(domain);
                 
                 const baseUrl = `https://favicon.im/${cleanDomain}`;
                 const largeUrl = `${baseUrl}?larger=true`;
 
-                // Update text content
                 faviconDefaultUrlEl.textContent = baseUrl;
                 faviconLargeUrlEl.textContent = largeUrl;
 
-                // Update image sources
                 faviconDefaultImgEl.src = baseUrl;
                 faviconLargeImgEl.src = largeUrl;
 
-                // Show results
                 resultsDiv.classList.remove('hidden');
             } else {
-                // Hide results if input is invalid
                 resultsDiv.classList.add('hidden');
             }
         });
@@ -164,7 +169,6 @@
             const textToCopy = document.getElementById(elementId).textContent;
             if (!textToCopy) return;
 
-            // Use the modern Clipboard API if available, fall back to execCommand
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     showCopyFeedback(button, elementId);
@@ -182,7 +186,6 @@
             const textArea = document.createElement('textarea');
             textArea.value = textToCopy;
             
-            // Avoid scrolling and make it invisible
             textArea.style.position = "fixed";
             textArea.style.top = "0";
             textArea.style.left = "0";
@@ -215,7 +218,6 @@
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.classList.remove('bg-green-500', 'hover:bg-green-600');
-                // Restore original color
                 if(isDefault){
                      button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
                 } else {
@@ -224,7 +226,7 @@
             }, 2000);
         }
         
-        // Handle image loading errors (using a simple placeholder)
+        // Handle image loading errors
         const placeholderSrc32 = 'https://placehold.co/32x32/1f2937/4b5563?text=?';
         const placeholderSrc64 = 'https://placehold.co/64x64/1f2937/4b5563?text=?';
 
