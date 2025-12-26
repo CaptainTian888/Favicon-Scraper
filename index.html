@@ -52,6 +52,7 @@
             </div>
 
             <div id="results" class="mt-8 space-y-4 hidden">
+                <div class="text-sm uppercase tracking-widest text-gray-500">Favicon.im</div>
                 <div class="bg-gray-900/50 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
                     <div class="flex items-center gap-4">
                          <img id="faviconDefaultImg" src="https://placehold.co/32x32/1f2937/4b5563?text=?" alt="Favicon" class="w-8 h-8 rounded-md bg-gray-700 favicon-img">
@@ -77,6 +78,46 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="text-sm uppercase tracking-widest text-gray-500 pt-2">Google S2</div>
+                <div class="bg-gray-900/50 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <img id="google32Img" src="https://placehold.co/32x32/1f2937/4b5563?text=?" alt="Google 32px Favicon" class="w-8 h-8 rounded-md bg-gray-700 favicon-img">
+                        <code id="google32Url" class="text-indigo-300 break-all"></code>
+                    </div>
+                    <div class="copy-btn-container">
+                        <button onclick="copyToClipboard('google32Url', this)" class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md flex items-center gap-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <img id="google64Img" src="https://placehold.co/64x64/1f2937/4b5563?text=?" alt="Google 64px Favicon" class="w-16 h-16 rounded-md bg-gray-700">
+                        <code id="google64Url" class="text-teal-300 break-all"></code>
+                    </div>
+                    <div class="copy-btn-container">
+                        <button onclick="copyToClipboard('google64Url', this)" class="copy-btn bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-md flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <img id="google128Img" src="https://placehold.co/128x128/1f2937/4b5563?text=?" alt="Google 128px Favicon" class="w-20 h-20 rounded-md bg-gray-700">
+                        <code id="google128Url" class="text-teal-300 break-all"></code>
+                    </div>
+                    <div class="copy-btn-container">
+                        <button onclick="copyToClipboard('google128Url', this)" class="copy-btn bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-md flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -92,6 +133,12 @@
         const faviconLargeUrlEl = document.getElementById('faviconLargeUrl');
         const faviconDefaultImgEl = document.getElementById('faviconDefaultImg');
         const faviconLargeImgEl = document.getElementById('faviconLargeImg');
+        const google32UrlEl = document.getElementById('google32Url');
+        const google64UrlEl = document.getElementById('google64Url');
+        const google128UrlEl = document.getElementById('google128Url');
+        const google32ImgEl = document.getElementById('google32Img');
+        const google64ImgEl = document.getElementById('google64Img');
+        const google128ImgEl = document.getElementById('google128Img');
         const pasteBtn = document.getElementById('pasteBtn');
         const clearBtn = document.getElementById('clearBtn'); // Get the new clear button
 
@@ -151,12 +198,22 @@
                 
                 const baseUrl = `https://favicon.im/${cleanDomain}`;
                 const largeUrl = `${baseUrl}?larger=true`;
+                const googleBaseUrl = `https://www.google.com/s2/favicons?domain=${cleanDomain}`;
+                const google32Url = `${googleBaseUrl}&sz=32`;
+                const google64Url = `${googleBaseUrl}&sz=64`;
+                const google128Url = `${googleBaseUrl}&sz=128`;
 
                 faviconDefaultUrlEl.textContent = baseUrl;
                 faviconLargeUrlEl.textContent = largeUrl;
+                google32UrlEl.textContent = google32Url;
+                google64UrlEl.textContent = google64Url;
+                google128UrlEl.textContent = google128Url;
 
                 faviconDefaultImgEl.src = baseUrl;
                 faviconLargeImgEl.src = largeUrl;
+                google32ImgEl.src = google32Url;
+                google64ImgEl.src = google64Url;
+                google128ImgEl.src = google128Url;
 
                 resultsDiv.classList.remove('hidden');
             } else {
@@ -229,12 +286,22 @@
         // Handle image loading errors
         const placeholderSrc32 = 'https://placehold.co/32x32/1f2937/4b5563?text=?';
         const placeholderSrc64 = 'https://placehold.co/64x64/1f2937/4b5563?text=?';
+        const placeholderSrc128 = 'https://placehold.co/128x128/1f2937/4b5563?text=?';
 
         faviconDefaultImgEl.onerror = function() {
             this.src = placeholderSrc32;
         };
         faviconLargeImgEl.onerror = function() {
             this.src = placeholderSrc64;
+        };
+        google32ImgEl.onerror = function() {
+            this.src = placeholderSrc32;
+        };
+        google64ImgEl.onerror = function() {
+            this.src = placeholderSrc64;
+        };
+        google128ImgEl.onerror = function() {
+            this.src = placeholderSrc128;
         };
     </script>
 </body>
